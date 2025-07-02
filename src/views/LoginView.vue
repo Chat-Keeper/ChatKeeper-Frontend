@@ -1,6 +1,6 @@
 <script>
 import {defineComponent} from 'vue'
-import axios from 'axios'
+import request from '@/utils/request.js'
 import {useAuthStore} from "@/store/auth.js";
 
 export default defineComponent({
@@ -14,7 +14,7 @@ export default defineComponent({
   },
   methods: {
     login() {
-      axios.post('/mock/auth/login', {
+      request.post('/auth/login', {
         username: this.username,
         password: this.password,
       })
