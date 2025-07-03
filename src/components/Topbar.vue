@@ -7,6 +7,7 @@ export default defineComponent({
   data() {
     return {
       authStore: null,
+      tabStatus: "0",
       userOps: [
         {
           label: () => this.authStore.username,
@@ -44,20 +45,25 @@ export default defineComponent({
     logout() {
       this.authStore.logout()
       this.$router.push('/')
-    }
+      this.tabStatus = "0"
+    },
+    toggleTab(value) {
+      this.tabStatus = value
+    },
   },
   created() {
     this.authStore = useAuthStore()
+    this.tabStatus = this.$route.path === '/home' ? '0' : this.$route.path === '/home/groups' ? '1' : '2'
   },
 })
 </script>
 
 <template>
-  <Menubar class="flex h-16 rounded-none! border-x-0! backdrop-blur-lg! bg-surface-0/80! dark:bg-surface-900/80!">
+  <Menubar class="flex h-16 rounded-none! border-x-0! backdrop-blur-lg! bg-surface-0/75! dark:bg-surface-900/75! shadow-xs">
     <template #start>
       <div class="flex items-center gap-5">
         <div class="flex items-center">
-          <router-link to="/">
+          <router-link :to="authStore.loginStatus ? '/home' : '/'" @click="toggleTab('0')">
             <Avatar image="/src/assets/logo.svg" class="mx-2" size="middle"/>
           </router-link>
           <div class="text-primary font-bold text-xl leading-tight">
@@ -69,9 +75,9 @@ export default defineComponent({
     <template #end>
       <div class="flex items-center gap-5">
         <div v-if="authStore.loginStatus">
-          <Tabs value="0" class="border-0! -mb-0.5! mr-3" style="--p-tabs-tab-border-width: 0; --p-tabs-tablist-background: none">
+          <Tabs :value="tabStatus" class="border-0! -mb-0.5! mr-3" style="--p-tabs-tab-border-width: 0; --p-tabs-tablist-background: none">
             <TabList>
-              <router-link to="/home">
+              <router-link to="/home" @click="toggleTab('0')">
                 <Tab class="mb-0.25!" value="0">
                   <a class="flex items-center gap-2 mt-1" >
                     <i class="pi pi-home" style="font-size: 1.2rem"/>
@@ -79,7 +85,7 @@ export default defineComponent({
                   </a>
                 </Tab>
               </router-link>
-              <router-link to="/home/groups">
+              <router-link to="/home/groups" @click="toggleTab('1')">
                 <Tab class="mb-0.25!" value="1">
                   <a class="flex items-center gap-2 mt-1" >
                     <i class="pi pi-comments" style="font-size: 1.2rem"/>
@@ -87,7 +93,7 @@ export default defineComponent({
                   </a>
                 </Tab>
               </router-link>
-              <router-link to="/home/speakers">
+              <router-link to="/home/speakers" @click="toggleTab('2')">
                 <Tab class="mb-0.25!" value="2">
                   <a class="flex items-center gap-2 mt-1" >
                     <i class="pi pi-users" style="font-size: 1.4rem"/>
