@@ -53,7 +53,7 @@ export default defineComponent({
   },
   created() {
     this.authStore = useAuthStore()
-    this.tabStatus = this.$route.path === '/home' ? '0' : this.$route.path === '/home/groups' ? '1' : '2'
+    this.tabStatus = this.$route.path === '/home' ? '0' : this.$route.path.slice(0, 12) === '/home/groups' ? '1' : '2'
   },
 })
 </script>
@@ -62,14 +62,14 @@ export default defineComponent({
   <Menubar class="flex h-16 rounded-none! border-x-0! backdrop-blur-lg! bg-surface-0/75! dark:bg-surface-900/75! shadow-xs">
     <template #start>
       <div class="flex items-center gap-5">
-        <div class="flex items-center">
-          <router-link :to="authStore.loginStatus ? '/home' : '/'" @click="toggleTab('0')">
-            <Avatar image="/src/assets/logo.svg" class="mx-2" size="middle"/>
-          </router-link>
-          <div class="text-primary font-bold text-xl leading-tight">
-            ChatKeeper
+        <router-link :to="authStore.loginStatus ? '/home' : '/'" @click="toggleTab('0')">
+          <div class="flex items-center">
+<!--            <Avatar image="/src/assets/logo.svg" class="mx-2" size="middle"/>-->
+            <div class="text-primary font-bold text-2xl leading-tight mr-1">
+              ChatKeeper
+            </div>
           </div>
-        </div>
+        </router-link>
       </div>
     </template>
     <template #end>

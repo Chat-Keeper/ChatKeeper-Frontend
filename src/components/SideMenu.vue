@@ -28,7 +28,7 @@ export default defineComponent({
     <div class="transition-all duration-200 ease-in-out overflow-hidden" :style="displaySideMenu ? 'width: 20rem' : 'width: 0'">
       <div class="w-80 h-[calc(100vh-4rem)] overflow-auto border-r border-surface-200 dark:border-surface-700 shadow-xs">
         <template v-for="item in groupList">
-          <RouterLink :to="'/home/groups/' + item.group_id ">
+          <router-link :to="'/home/groups/' + item.group_id ">
             <Card class="dark:bg-surface-900! mx-1 my-2 hover:bg-surface-50! dark:hover:bg-surface-800!">
               <template #title>
                 <div class="flex items-center gap-5 h-12 pt-1">
@@ -53,7 +53,7 @@ export default defineComponent({
                 </div>
               </template>
             </Card>
-          </RouterLink>
+          </router-link>
         </template>
       </div>
     </div>

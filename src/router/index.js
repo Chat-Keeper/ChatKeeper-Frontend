@@ -25,7 +25,8 @@ const router = createRouter({
           children: [
             {
               path: '/home/groups/:group_id',
-              name: 'group-detail'
+              name: 'group-detail',
+              component: () => import('@/views/GroupDetailView.vue'),
             }
           ]
         },
@@ -38,6 +39,11 @@ const router = createRouter({
           path: '/login',
           name: 'login',
           component: () => import('@/views/LoginView.vue'),
+        },
+        {
+          path: '/:pathMatch(.*)*',
+          name: 'not-found',
+          component: () => import('@/views/NotFoundView.vue'),
         }
       ],
     },
