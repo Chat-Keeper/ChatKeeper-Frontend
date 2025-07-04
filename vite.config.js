@@ -24,22 +24,4 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url))
     },
   },
-  base: '/',
-  // 设置反向代理实现跨域访问服务端
-  server: {
-    proxy: {
-      // mock服务器
-      '/mock': {
-        target: 'http://127.0.0.1:4523/m1/6398604-6095377-default',
-        changeOrigin: true,
-        rewrite: path => path.replace(/^\/mock/, '')
-      },
-      // 开发服务器
-      '/dev': {
-        target: 'http://127.0.0.1:5000',
-        changeOrigin: true,
-        rewrite: path => path.replace(/^\/dev/, '')
-      }
-    }
-  },
 })

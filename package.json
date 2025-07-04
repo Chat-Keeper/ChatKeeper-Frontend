@@ -4,8 +4,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
+    "mock": "vite --mode mock --host",
+    "dev": "vite --mode development --host",
+    "build": "vite build --host",
     "preview": "vite preview",
     "format": "prettier --write src/"
   },
