@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
 import { defineComponent } from 'vue'
 import request from '@/utils/request.js'
 
@@ -15,7 +15,9 @@ export default defineComponent({
       uploadFile: null,
       uploadProgress: 0,
       uploadStatus: 'pending',
-      interestingSpeakers: []
+      interestingSpeakers: [],
+      groupSettingDialogVisible: false,
+      newGroupName: '',
     }
   },
 
@@ -62,15 +64,6 @@ export default defineComponent({
         })
     },
 
-    uploadSuccessToast() {
-      this.$toast.add({
-        severity: 'success',
-        summary: '上传成功',
-        detail: '文件已经上传至数据库，请等待页面刷新……',
-        life: 3000,
-      })
-    },
-
     searchInterest() {
       request
         .post('/analysis/search', {
@@ -91,6 +84,77 @@ export default defineComponent({
           console.log(error)
         })
     },
+
+    renameGroup() {
+      if (this.newGroupName.length > 0) {
+        request
+          .post('/data/group/rename', {
+            group_id: this.$route.params.group_id,
+            group_name: this.newGroupName,
+          })
+          .then((response) => {
+            console.log(response)
+            if (response.data.code === 200) {
+              console.log(response.data.msg)
+              this.$emit('renameGroup', this.newGroupName)
+              this.groupSettingDialogVisible = false
+            }
+          })
+          .catch((error) => {
+            console.log(error)
+          })
+      }
+      else {
+        this.groupSettingDialogVisible = false
+      }
+    },
+
+    deleteGroup() {
+      request
+        .post('/data/group/delete', {
+          group_id: this.$route.params.group_id
+        })
+        .then((response) => {
+          console.log(response)
+          if (response.data.code === 200) {
+            console.log(response.data.msg)
+            this.$emit('deleteGroup', this.$route.params.group_id)
+          }
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+    },
+
+    deleteConfirm() {
+      this.$confirm.require({
+        message: '你确定要删除群聊\"' + this.currentGroup.group_name + '\"吗？',
+        header: '警告',
+        icon: 'pi pi-exclamation-triangle',
+        rejectProps: {
+          label: '取消',
+          severity: 'secondary',
+          outlined: true
+        },
+        acceptProps: {
+          label: '删除',
+          severity: 'danger',
+        },
+        accept: () => {
+          this.deleteGroup()
+        },
+      })
+    },
+
+    uploadSuccessToast() {
+      this.$toast.add({
+        severity: 'success',
+        summary: '上传成功',
+        detail: '聊天记录已经上传至数据库，请等待页面刷新！',
+        life: 3000,
+      })
+    },
+
   },
 
   watch: {
@@ -312,6 +376,7 @@ export default defineComponent({
             <p>上传聊天记录</p>
           </div>
         </template>
+
         <template #content>
           <div class="flex items-start mt-2">
             <FileUpload
@@ -367,11 +432,40 @@ export default defineComponent({
             <p>群聊设置</p>
           </div>
         </template>
+
         <template #content>
           <div class="flex-col items-center">
             <div class="flex items-center gap-4 mt-2">
-              <Button label="设置群聊" severity="secondary" variant="outlined" />
-              <Button label=" 删除群聊" severity="danger" variant="outlined" />
+
+              <Dialog
+                modal
+                v-model:visible="groupSettingDialogVisible"
+                header="群聊设置"
+                :style="{ width: '25rem' }"
+                class="p-1 backdrop-blur-lg! bg-white/95! dark:bg-surface-900/80!"
+              >
+                <template #header>
+                  <div class="inline-flex items-center justify-center gap-2">
+                    <span class="text-xl font-bold whitespace-nowrap">群聊设置</span>
+                  </div>
+                </template>
+                <span class="text-surface-500 dark:text-surface-400 block mb-5">
+                  你可以重命名这个群聊，或者什么都不做
+                </span>
+                <div class="flex items-center gap-2 mb-2 mr-2">
+                  <label for="groupName" class="w-14">重命名</label>
+                  <InputText v-model="newGroupName" id="groupName" placeholder="新的群聊名称" class="flex-auto bg-white/50! dark:bg-surface-950/50!" autocomplete="off" />
+                </div>
+                <template #footer>
+                  <Button label="取消" text severity="secondary" @click="groupSettingDialogVisible = false" autofocus />
+                  <Button label="保存" outlined severity="secondary" @click="renameGroup" autofocus class="mr-2" />
+                </template>
+              </Dialog>
+              <Button @click="groupSettingDialogVisible = true" label="设置群聊" severity="secondary" variant="outlined" />
+
+              <ConfirmDialog class="w-100 backdrop-blur-lg! bg-white/95! dark:bg-surface-900/80!"></ConfirmDialog>
+              <Button @click="deleteConfirm()" label=" 删除群聊" severity="danger" variant="outlined" />
+
             </div>
           </div>
         </template>

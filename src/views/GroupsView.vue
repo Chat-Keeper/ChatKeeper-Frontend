@@ -32,14 +32,35 @@ export default defineComponent({
         })
     },
 
-    updateGroup(data) {
+    updateGroup(groupInfo) {
       // mock返回group_id随机时的临时策略，后续修改
       let index = this.groupList.findIndex((group) => group.group_id === this.$route.params.group_id)
       if (index !== -1) {
-        this.groupList[index] = data
+        this.groupList[index] = groupInfo
+        this.$router.push('/home/groups/' + this.groupList[index].group_id)
       }
-      this.$router.push('/home/groups/' + this.groupList[index].group_id)
-    }
+      else {
+        this.groupList.push(groupInfo)
+        this.$router.push('/home/groups/' + groupInfo.group_id)
+      }
+    },
+
+    renameGroup(groupName) {
+      let index = this.groupList.findIndex((group) => group.group_id === this.$route.params.group_id)
+      if (index !== -1) {
+        this.groupList[index].group_name = groupName
+      }
+    },
+
+    deleteGroup(groupId) {
+      let index = this.groupList.findIndex((group) => group.group_id === groupId)
+      if (index !== -1) {
+        this.groupList.splice(index, 1)
+        this.currentGroup = null
+        this.$router.push('/home/groups/new')
+      }
+    },
+
   },
 
   created() {
@@ -48,6 +69,9 @@ export default defineComponent({
 
   watch: {
     $route(to, from) {
+      if (to.path.includes('new')) {
+        return
+      }
       console.log(to.params.group_id)
       this.currentGroup = this.groupList.find((group) => group.group_id === to.params.group_id)
       if (!this.currentGroup) {
@@ -63,11 +87,17 @@ export default defineComponent({
 
 <template>
   <div class="xl:flex xl:items-start bg-surface-50 dark:bg-surface-950">
-    <div class="fixed xl:sticky top-16">
-      <SideMenu :group-list="groupList" class="h-[calc(100vh-4rem)]"></SideMenu>
+    <div class=" fixed xl:sticky top-16 z-100!">
+      <SideMenu :group-list="groupList" class="h-[calc(100vh-4rem)] absolute"></SideMenu>
     </div>
     <div class="flex-grow min-h-[calc(100vh-4rem)] bg-surface-50 dark:bg-surface-950 ml-12 xl:ml-0">
-      <router-view :current-group="currentGroup" @updateGroup="updateGroup"></router-view>
+      <router-view
+        :current-group="currentGroup"
+        @update-group="updateGroup"
+        @rename-group="renameGroup"
+        @delete-group="deleteGroup"
+      >
+      </router-view>
     </div>
   </div>
 </template>
