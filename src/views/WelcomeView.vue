@@ -1,6 +1,6 @@
 <script>
-import {defineComponent} from 'vue'
-import {useAuthStore} from "@/store/auth.js";
+import { defineComponent } from 'vue'
+import { useAuthStore } from "@/store/auth.js";
 
 export default defineComponent({
   name: "WelcomeView",

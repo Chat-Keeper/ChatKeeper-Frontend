@@ -27,7 +27,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="min-h-screen">
+  <div class="min-h-screen dark:bg-surface-950">
     <Topbar class="fixed! w-full z-9999"></Topbar>
     <div class="pt-16">
       <Toast class="mt-16" />
