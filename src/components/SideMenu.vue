@@ -15,7 +15,7 @@ export default defineComponent({
     toggleSideMenu() {
       this.displaySideMenu = !this.displaySideMenu
     }
-  }
+  },
 })
 </script>
 
@@ -29,11 +29,23 @@ export default defineComponent({
       <div class="w-80 h-[calc(100vh-4rem)] overflow-auto border-r border-surface-200 dark:border-surface-700 shadow-xs">
         <template v-for="item in groupList">
           <router-link :to="'/home/groups/' + item.group_id ">
-            <Card class="dark:bg-surface-900! mx-1 my-2 hover:bg-surface-50! dark:hover:bg-surface-800!">
+            <Card
+              class="mx-1 my-2"
+              :class="item.group_id === $route.params.group_id
+                ? 'bg-primary-100! dark:bg-primary-900!'
+                : 'dark:bg-surface-900! hover:bg-surface-50! dark:hover:bg-surface-800!'"
+            >
               <template #title>
                 <div class="flex items-center gap-5 h-12 pt-1">
                   <div>
-                    <Avatar :label="item.group_name[0]" size="xlarge" shape="circle"></Avatar>
+                    <Avatar
+                      :label="item.group_name[0]"
+                      size="xlarge"
+                      shape="circle"
+                      :class="item.group_id === $route.params.group_id
+                        ? 'bg-primary-200! dark:bg-primary-700!'
+                        : ''"
+                    />
                   </div>
                   <div class="flex-col gap-2">
                     <div class="text-lg w-45">
