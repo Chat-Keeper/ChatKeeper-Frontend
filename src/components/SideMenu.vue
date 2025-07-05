@@ -1,5 +1,6 @@
 <script>
 import { defineComponent } from 'vue'
+import { useWindowSize } from "@vueuse/core"
 
 export default defineComponent({
   name: 'SideMenu',
@@ -16,24 +17,43 @@ export default defineComponent({
       this.displaySideMenu = !this.displaySideMenu
     }
   },
+  setup() {
+    const { width } = useWindowSize()
+    return {
+      width
+    }
+  },
+  watch: {
+    width(newWidth) {
+      this.displaySideMenu = newWidth >= 1280;
+    },
+    $route() {
+      if (this.width < 1280) {
+        this.displaySideMenu = false;
+      }
+    },
+  }
 })
 </script>
 
 <template>
-  <div class="flex">
-    <div class="flex-col h-[calc(100vh-4rem)] w-12 p-1.5 border-r border-surface-200 dark:border-surface-700 shadow-xs">
+  <div class="flex shadow-xs">
+    <div class="flex-col h-[calc(100vh-4rem)] w-12 p-1.5 border-r border-surface-200 dark:border-surface-700 bg-surface-0 dark:bg-surface-950 z-100!">
       <Button icon="pi pi-align-justify" severity="secondary" size="small" class="my-2" @click="toggleSideMenu()"></Button>
       <Button icon="pi pi-search" severity="secondary" size="small" class="my-2" @click=""></Button>
     </div>
-    <div class="transition-all duration-200 ease-in-out overflow-hidden" :style="displaySideMenu ? 'width: 20rem' : 'width: 0'">
+    <div
+      class="transition-all duration-200 ease-in-out overflow-hidden backdrop-blur-lg! bg-surface-0/75 dark:bg-surface-950/75 z-50!"
+      :class="displaySideMenu ? 'xl:w-80 translate-x-0' : 'xl:w-0 -translate-x-full'"
+    >
       <div class="w-80 h-[calc(100vh-4rem)] overflow-auto border-r border-surface-200 dark:border-surface-700 shadow-xs">
         <template v-for="item in groupList">
           <router-link :to="'/home/groups/' + item.group_id ">
             <Card
-              class="mx-1 my-2"
+              class="mx-1 my-2 backdrop-blur-lg!"
               :class="item.group_id === $route.params.group_id
-                ? 'bg-primary-100! dark:bg-primary-900!'
-                : 'dark:bg-surface-900! hover:bg-surface-50! dark:hover:bg-surface-800!'"
+                ? 'bg-primary-100/50! dark:bg-primary-900/50!'
+                : 'dark:bg-surface-900/50! hover:bg-surface-50/50! dark:hover:bg-surface-800/50!'"
             >
               <template #title>
                 <div class="flex items-center gap-5 h-12 pt-1">

@@ -62,11 +62,11 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="flex items-start">
-    <div class="flex-shrink-0 sticky top-16">
+  <div class="xl:flex xl:items-start bg-surface-50 dark:bg-surface-950">
+    <div class="fixed xl:sticky top-16">
       <SideMenu :group-list="groupList" class="h-[calc(100vh-4rem)]"></SideMenu>
     </div>
-    <div class="flex-grow min-h-[calc(100vh-4rem)] bg-surface-50 dark:bg-surface-950">
+    <div class="flex-grow min-h-[calc(100vh-4rem)] bg-surface-50 dark:bg-surface-950 ml-12 xl:ml-0">
       <router-view :current-group="currentGroup" @updateGroup="updateGroup"></router-view>
     </div>
   </div>
