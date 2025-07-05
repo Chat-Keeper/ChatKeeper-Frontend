@@ -27,11 +27,14 @@ export default defineComponent({
     width(newWidth) {
       this.displaySideMenu = newWidth >= 1280;
     },
-    $route() {
-      if (this.width < 1280) {
+    $route(to, from) {
+      if (this.width < 1280 && to.path !== '/home/groups') {
         this.displaySideMenu = false;
       }
     },
+    displaySideMenu() {
+      this.$emit('toggle', this.displaySideMenu);
+    }
   }
 })
 </script>
@@ -46,7 +49,7 @@ export default defineComponent({
       class="transition-all duration-200 ease-in-out overflow-hidden backdrop-blur-lg! bg-surface-0/75 dark:bg-surface-950/75 z-50!"
       :class="displaySideMenu ? 'xl:w-80 translate-x-0' : 'xl:w-0 -translate-x-full'"
     >
-      <div class="w-80 h-[calc(100vh-4rem)] overflow-auto border-r border-surface-200 dark:border-surface-700 shadow-xs">
+      <div class="w-80 h-[calc(100vh-4rem)] overflow-auto border-r border-surface-200 dark:border-surface-700 shadow-xs z-50!">
 
         <template v-for="item in groupList">
           <router-link :to="'/home/groups/' + item.group_id ">
