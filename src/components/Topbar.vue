@@ -1,16 +1,16 @@
 <script>
 import {defineComponent} from 'vue'
-import {useAuthStore} from "@/store/auth.js";
+import { useAuthStore } from "@/store/auth.js"
+import request from '@/utils/request.js'
 
 export default defineComponent({
   name: "Topbar",
   data() {
     return {
-      authStore: null,
       tabStatus: "0",
       userOps: [
         {
-          label: () => this.authStore.username,
+          label: () => useAuthStore().username,
           icon: 'pi pi-user',
         },
         {
@@ -36,23 +36,38 @@ export default defineComponent({
     }
   },
   methods: {
+    useAuthStore,
+
     toggleDarkMode() {
       document.documentElement.classList.toggle('dark-mode-selector');
     },
+
     toggleUserMenu(event) {
       this.$refs.userMenu.toggle(event);
     },
+
     logout() {
-      this.authStore.logout()
-      this.$router.push('/')
-      this.tabStatus = "0"
+      request
+        .post('/auth/logout')
+        .then((response) => {
+          console.log(response)
+          if (response.data.code === 200) {
+            useAuthStore().logout()
+            console.log(response.data.msg)
+            this.$router.push('/')
+            this.tabStatus = "0"
+          }
+        })
+        .catch((error) => {
+          console.log(error)
+        })
     },
+
     toggleTab(value) {
       this.tabStatus = value
     },
   },
   created() {
-    this.authStore = useAuthStore()
     this.tabStatus = this.$route.path === '/home' ? '0' : this.$route.path.slice(0, 12) === '/home/groups' ? '1' : '2'
   },
 })
@@ -62,7 +77,7 @@ export default defineComponent({
   <Menubar class="flex h-16 rounded-none! border-x-0! backdrop-blur-lg! bg-surface-0/75! dark:bg-surface-900/75! shadow-xs">
     <template #start>
       <div class="flex items-center gap-5">
-        <router-link :to="authStore.loginStatus ? '/home' : '/'" @click="toggleTab('0')">
+        <router-link :to="useAuthStore().loginStatus ? '/home' : '/'" @click="toggleTab('0')">
           <div class="flex items-center">
 <!--            <Avatar image="/src/assets/logo.svg" class="mx-2" size="middle"/>-->
             <div class="text-primary font-bold text-2xl leading-tight mr-1">
@@ -74,7 +89,7 @@ export default defineComponent({
     </template>
     <template #end>
       <div class="flex items-center gap-5">
-        <div v-if="authStore.loginStatus">
+        <div v-if="useAuthStore().loginStatus">
           <Tabs :value="tabStatus" class="border-0! -mb-0.5! mr-3" style="--p-tabs-tab-border-width: 0; --p-tabs-tablist-background: none">
             <TabList>
               <router-link to="/home" @click="toggleTab('0')">
@@ -106,7 +121,7 @@ export default defineComponent({
         </div>
         <Button :icon="true ? 'pi pi-moon' : 'pi pi-sun'" severity="secondary" rounded size="small" @click="toggleDarkMode()"/>
         <div class="mr-2">
-          <div v-if="authStore.loginStatus">
+          <div v-if="useAuthStore().loginStatus">
             <Button @click="toggleUserMenu" icon="pi pi-user" class="" rounded/>
             <TieredMenu ref="userMenu" id="user-menu" :model="userOps" class="mt-6!" popup/>
           </div>

@@ -27,8 +27,8 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="min-h-screen">
-    <Topbar class="fixed! w-full z-9999"></Topbar>
+  <div class="min-h-screen dark:bg-surface-950">
+    <Topbar class="fixed! w-full z-200"></Topbar>
     <div class="pt-16">
       <Toast class="mt-16" />
       <router-view></router-view>

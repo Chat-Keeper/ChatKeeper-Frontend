@@ -1,36 +1,39 @@
 <script>
-import {defineComponent} from 'vue'
+import { defineComponent } from 'vue'
 import request from '@/utils/request.js'
-import {useAuthStore} from "@/store/auth.js";
+import { useAuthStore } from "@/store/auth.js"
 
 export default defineComponent({
   name: "LoginView",
   data() {
     return {
-      authStore: null,
       username: '',
       password: '',
     }
   },
   methods: {
+    useAuthStore,
+
     login() {
-      request.post('/auth/login', {
-        username: this.username,
-        password: this.password,
-      })
-      .then((response) => {
-        console.log(response)
-        if (response.data.code === 200) {
-          this.authStore.login(response.data.data.user_id, response.data.data.username, response.data.data.token)
-          console.log(response.data.msg)
-          this.loginSuccessToast(response.data.data.username)
-          this.$router.push('/home')
-        }
-      })
-      .catch((error) => {
-        console.log(error)
-      })
+      request
+        .post('/auth/login', {
+          username: this.username,
+          password: this.password, 
+        })
+        .then((response) => {
+          console.log(response)
+          if (response.data.code === 200) {
+            useAuthStore().login(response.data.data.user_id, response.data.data.username, response.data.data.token)
+            console.log(response.data.msg)
+            this.loginSuccessToast(response.data.data.username)
+            this.$router.push('/home')
+          }
+        })
+        .catch((error) => {
+          console.log(error)
+        })
     },
+
     loginSuccessToast(username) {
       this.$toast.add({
         severity: 'success',
@@ -41,8 +44,7 @@ export default defineComponent({
     },
   },
   created() {
-    this.authStore = useAuthStore()
-    this.username = this.authStore.username
+    this.username = useAuthStore().username
   },
 })
 </script>
@@ -74,7 +76,7 @@ export default defineComponent({
         </div>
         <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between w-full gap-3 sm:gap-0">
           <div class="flex items-center gap-2">
-            <Checkbox v-model="authStore.rememberUser" id="remember-user" :binary="true"/>
+            <Checkbox v-model="useAuthStore().rememberUser" id="remember-user" :binary="true"/>
             <label for="remember-user" class="text-surface-900 dark:text-surface-0 leading-normal">记住我</label>
           </div>
           <router-link to="/" class="text-primary font-medium hover:text-primary-emphasis">忘记密码了？</router-link>
