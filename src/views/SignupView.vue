@@ -1,0 +1,97 @@
+<script>
+import { defineComponent } from 'vue'
+import request from '@/utils/request.js'
+import { useAuthStore } from "@/store/auth.js"
+
+export default defineComponent({
+  name: "SignupView",
+  data() {
+    return {
+      username: '',
+      password: '',
+      passwordCheck: '',
+    }
+  },
+  methods: {
+    useAuthStore,
+
+    signup() {
+      if (this.username === '' || this.password === '') {
+        return
+      }
+      if (this.password !== this.passwordCheck) {
+        return
+      }
+      request
+        .post('/auth/signup', {
+          username: this.username,
+          password: this.password,
+        })
+        .then((response) => {
+          console.log(response)
+          if (response.data.code === 200) {
+            useAuthStore().login(response.data.data.user_id, response.data.data.username, response.data.data.token)
+            console.log(response.data.msg)
+            this.signupSuccessToast(response.data.data.username)
+            this.$router.push('/home')
+          }
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+    },
+
+    signupSuccessToast(username) {
+      this.$toast.add({
+        severity: 'success',
+        summary: '注册成功',
+        detail: '欢迎你，' + username + '！',
+        life: 3000
+      })
+    },
+  },
+  created() {
+    this.username = useAuthStore().username
+  },
+})
+</script>
+
+<template>
+
+  <div class="min-h-screen bg-surface-50 dark:bg-surface-950 px-6 py-20 md:px-12 lg:px-20">
+    <div class="bg-surface-0 dark:bg-surface-900 p-10 md:p-12 md:px-14 shadow-sm rounded-2xl max-w-lg mx-auto flex flex-col gap-8">
+      <div class="flex flex-col items-center gap-6">
+        <div class="flex items-center gap-4">
+          <Avatar icon="pi pi-prime" class="bg-transparent" size="xlarge"/>
+        </div>
+        <div class="flex flex-col items-center gap-3 w-full">
+          <div class="text-surface-900 dark:text-surface-0 text-3xl font-semibold leading-tight text-center w-full">注册账号</div>
+          <div class="text-center w-full">
+            <span class="text-surface-700 dark:text-surface-200 leading-normal">拥有一个账号？</span>
+            <router-link to="/login" class="text-primary font-medium ml-1 hover:text-primary-emphasis">去登录！</router-link>
+          </div>
+        </div>
+      </div>
+      <div class="flex flex-col gap-6 w-full">
+        <div class="flex flex-col gap-2 w-full">
+          <label for="username" class="text-surface-900 dark:text-surface-0 font-medium leading-normal">用户名/Username</label>
+          <InputText v-model="username" id="username" type="text" placeholder="创建你的用户名" class="w-full p-3 shadow-sm rounded-lg"/>
+        </div>
+        <div class="flex flex-col gap-2 w-full">
+          <label for="password" class="text-surface-900 dark:text-surface-0 font-medium leading-normal">密码/Password</label>
+          <InputText v-model="password" id="password" type="password" placeholder="创建你的密码" class="w-full p-3 shadow-sm rounded-lg"/>
+          <InputText v-model="passwordCheck" id="password" type="password" placeholder="再次输入密码" class="w-full p-3 shadow-sm rounded-lg my-2"/>
+        </div>
+      </div>
+      <Button @click="signup()" label="注册" icon="pi pi-user" class="w-full py-2 rounded-lg flex justify-center items-center gap-2">
+        <template #icon>
+          <i class="pi pi-user !text-base !leading-normal"/>
+        </template>
+      </Button>
+    </div>
+  </div>
+</template>
+
+<style scoped>
+
+</style>
