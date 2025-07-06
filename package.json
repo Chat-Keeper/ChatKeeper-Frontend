@@ -6,7 +6,7 @@
   "scripts": {
     "mock": "vite --mode mock --host",
     "dev": "vite --mode development --host",
-    "build": "vite build --host",
+    "build": "vite build",
     "preview": "vite preview",
     "format": "prettier --write src/"
   },

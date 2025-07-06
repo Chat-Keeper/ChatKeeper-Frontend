@@ -247,7 +247,7 @@ export default defineComponent({
                       <p>{{ speaker.speaker_name }}</p>
                     </Badge>
                     <div class="flex gap-2 items-center">
-                      <i class="pi pi-tag"></i>
+                      <i class="pi pi-inbox"></i>
                       <p size="large" class="font-bold">
                         {{ speaker.speaker_qq }}
                       </p>
@@ -328,7 +328,7 @@ export default defineComponent({
                       <p>{{ speaker.speaker_name }}</p>
                     </Badge>
                     <div class="flex gap-2 items-center">
-                      <i class="pi pi-tag"></i>
+                      <i class="pi pi-inbox"></i>
                       <p size="large" class="font-bold">
                         {{ speaker.speaker_qq }}
                       </p>
