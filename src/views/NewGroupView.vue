@@ -58,6 +58,7 @@ export default defineComponent({
         .catch((error) => {
           console.log(error)
           this.uploadStatus = 'error'
+          this.deleteGroup()
         })
     },
 

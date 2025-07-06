@@ -24,6 +24,12 @@ export default defineComponent({
     }
   },
 
+  created() {
+    if (this.width < 1280 && this.$route.path !== '/home/speakers') {
+      this.displaySideMenu = false;
+    }
+  },
+
   setup() {
     const { width } = useWindowSize()
     return {

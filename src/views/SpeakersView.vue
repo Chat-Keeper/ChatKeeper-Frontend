@@ -39,7 +39,6 @@ export default defineComponent({
 
   created() {
     this.getSpeakers()
-    this.$router.push('/home/speakers')
   },
 
   watch: {
@@ -51,6 +50,11 @@ export default defineComponent({
         console.log('not found')
       }
     },
+    speakerList() {
+      if (this.$route.params.speaker_id) {
+        this.currentSpeaker = this.speakerList.find((speaker) => speaker.speaker_id === this.$route.params.speaker_id)
+      }
+    }
   },
 
 })

@@ -63,7 +63,6 @@ export default defineComponent({
     analyzeSpeaker() {
       request
         .post('/analysis/speaker', {
-          group_id: this.currentSpeaker.speaker_id, //接口问题
           speaker_id: this.currentSpeaker.speaker_id,
         })
         .then((response) => {
@@ -115,11 +114,14 @@ export default defineComponent({
   },
 
   created() {
-    this.getSpeaker()
+    if (this.currentSpeaker.analyzed) {
+      this.getSpeaker()
+    }
   },
 
   watch: {
     currentSpeaker() {
+      console.log('currentSpeaker', this.currentSpeaker)
       this.ready = false
       this.speakerDetails = null
       if (this.currentSpeaker.analyzed) {
@@ -414,11 +416,21 @@ export default defineComponent({
         <template #content>
           <div v-if="ready" class="flex flex-wrap items-center gap-3 m-4 mb-2">
             <div v-if="ready" v-for="tag in speakerDetails.tags">
-              <Tag icon="pi pi-hashtag" :value="tag" rounded class="mb-1 text-lg! font-medium! min-w-10!"></Tag>
+              <Tag
+                icon="pi pi-hashtag"
+                :value="tag"
+                rounded
+                class="mb-1 text-lg! font-medium! min-w-10!"
+              ></Tag>
             </div>
           </div>
           <div v-else class="flex flex-wrap items-center gap-3 m-4 mb-2">
-            <Skeleton v-for="i in 10" height="2rem" :width="i % 3 ? '4rem' : '6rem'" class="mb-1"></Skeleton>
+            <Skeleton
+              v-for="i in 10"
+              height="2rem"
+              :width="i % 3 ? '4rem' : '6rem'"
+              class="mb-1"
+            ></Skeleton>
           </div>
         </template>
       </Card>
