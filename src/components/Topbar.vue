@@ -66,10 +66,19 @@ export default defineComponent({
     toggleTab(value) {
       this.tabStatus = value
     },
+
   },
+
   created() {
     this.tabStatus = this.$route.path === '/home' ? '0' : this.$route.path.slice(0, 12) === '/home/groups' ? '1' : '2'
   },
+
+  watch: {
+    $route(to, from) {
+      this.tabStatus = to.path === '/home' ? '0' : to.path.slice(0, 12) === '/home/groups' ? '1' : '2'
+    }
+  },
+
 })
 </script>
 
@@ -119,7 +128,7 @@ export default defineComponent({
             </TabList>
           </Tabs>
         </div>
-        <Button :icon="true ? 'pi pi-moon' : 'pi pi-sun'" severity="secondary" rounded size="small" @click="toggleDarkMode()"/>
+        <Button :icon="false ? 'pi pi-moon' : 'pi pi-sun'" severity="secondary" rounded size="small" @click="toggleDarkMode()"/>
         <div class="mr-2">
           <div v-if="useAuthStore().loginStatus">
             <Button @click="toggleUserMenu" icon="pi pi-user" class="" rounded/>
