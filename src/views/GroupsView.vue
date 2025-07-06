@@ -1,17 +1,18 @@
 <script>
 import { defineComponent } from 'vue'
-import SideMenu from '@/components/SideMenu.vue'
+import GroupsSideMenu from '@/components/GroupsSideMenu.vue'
 import request from '@/utils/request.js'
 import GroupDetailView from '@/views/GroupDetailView.vue'
 
 export default defineComponent({
   name: 'GroupsView',
-  components: { GroupDetailView, SideMenu },
+  components: { GroupDetailView, GroupsSideMenu },
   data() {
     return {
       groupNum: 0,
       groupList: [],
       currentGroup: null,
+      displaySideMenu: true,
     }
   },
 
@@ -61,15 +62,21 @@ export default defineComponent({
       }
     },
 
+    toggleSideMenu(status) {
+      this.displaySideMenu = status
+    }
+
   },
 
   created() {
     this.getGroups()
+    this.$router.push('/home/groups')
   },
 
   watch: {
     $route(to, from) {
       if (to.path.includes('new')) {
+        this.currentGroup = null
         return
       }
       console.log(to.params.group_id)
@@ -78,8 +85,10 @@ export default defineComponent({
         this.$router.push('/home/groups')
         console.log('not found')
       }
-      this.currentGroup.speaker_list.sort((a, b) => b.speaker_msg_freq - a.speaker_msg_freq)
-      this.currentGroup['max_msg_freq'] = this.currentGroup.speaker_list[0].speaker_msg_freq
+      else {
+        this.currentGroup.speaker_list.sort((a, b) => b.speaker_msg_freq - a.speaker_msg_freq)
+        this.currentGroup['max_msg_freq'] = this.currentGroup.speaker_list[0].speaker_msg_freq
+      }
     },
   },
 })
@@ -87,11 +96,16 @@ export default defineComponent({
 
 <template>
   <div class="xl:flex xl:items-start bg-surface-50 dark:bg-surface-950">
-    <div class=" fixed xl:sticky top-16 z-100!">
-      <SideMenu :group-list="groupList" class="h-[calc(100vh-4rem)] absolute"></SideMenu>
+    <div class="fixed xl:sticky top-16" :class="displaySideMenu ? 'z-100!' : ''">
+      <GroupsSideMenu
+        :group-list="groupList"
+        @toggle="toggleSideMenu"
+        class="h-[calc(100vh-4rem)] absolute"
+      ></GroupsSideMenu>
     </div>
     <div class="flex-grow min-h-[calc(100vh-4rem)] bg-surface-50 dark:bg-surface-950 ml-12 xl:ml-0">
       <router-view
+        v-if="currentGroup || $route.path.includes('new')"
         :current-group="currentGroup"
         @update-group="updateGroup"
         @rename-group="renameGroup"

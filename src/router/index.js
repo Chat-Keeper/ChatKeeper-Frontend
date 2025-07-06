@@ -39,6 +39,13 @@ const router = createRouter({
           path: '/home/speakers',
           name: 'speakers',
           component: () => import('@/views/SpeakersView.vue'),
+          children: [
+            {
+              path: '/home/speakers/:speaker_id',
+              name: 'speaker-detail',
+              component: () => import('@/views/SpeakerDetailView.vue'),
+            }
+          ]
         },
         {
           path: '/login',

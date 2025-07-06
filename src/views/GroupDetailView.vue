@@ -247,7 +247,7 @@ export default defineComponent({
                       <p>{{ speaker.speaker_name }}</p>
                     </Badge>
                     <div class="flex gap-2 items-center">
-                      <i class="pi pi-tag"></i>
+                      <i class="pi pi-inbox"></i>
                       <p size="large" class="font-bold">
                         {{ speaker.speaker_qq }}
                       </p>
@@ -328,7 +328,7 @@ export default defineComponent({
                       <p>{{ speaker.speaker_name }}</p>
                     </Badge>
                     <div class="flex gap-2 items-center">
-                      <i class="pi pi-tag"></i>
+                      <i class="pi pi-inbox"></i>
                       <p size="large" class="font-bold">
                         {{ speaker.speaker_qq }}
                       </p>
@@ -464,7 +464,7 @@ export default defineComponent({
               <Button @click="groupSettingDialogVisible = true" label="设置群聊" severity="secondary" variant="outlined" />
 
               <ConfirmDialog class="w-100 backdrop-blur-lg! bg-white/95! dark:bg-surface-900/80!"></ConfirmDialog>
-              <Button @click="deleteConfirm()" label=" 删除群聊" severity="danger" variant="outlined" />
+              <Button @click="deleteConfirm()" label="删除群聊" severity="danger" variant="outlined" />
 
             </div>
           </div>
