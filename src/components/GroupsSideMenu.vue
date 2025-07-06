@@ -3,7 +3,7 @@ import { defineComponent } from 'vue'
 import { useWindowSize } from "@vueuse/core"
 
 export default defineComponent({
-  name: 'SideMenu',
+  name: 'GroupsSideMenu',
   props: {
     groupList: Array,
   },
@@ -43,7 +43,7 @@ export default defineComponent({
   <div class="flex shadow-xs">
     <div class="flex-col h-[calc(100vh-4rem)] w-12 p-1.5 border-r border-surface-200 dark:border-surface-700 bg-surface-0 dark:bg-surface-950 z-100!">
       <Button icon="pi pi-align-justify" severity="secondary" size="small" class="my-2" @click="toggleSideMenu()"></Button>
-      <Button icon="pi pi-search" severity="secondary" size="small" class="my-2" @click=""></Button>
+      <Button icon="pi pi-question-circle" severity="secondary" size="small" class="my-2" @click="" disabled></Button>
     </div>
     <div
       class="transition-all duration-200 ease-in-out overflow-hidden backdrop-blur-lg! bg-surface-0/75 dark:bg-surface-950/75 z-50!"

@@ -464,7 +464,7 @@ export default defineComponent({
               <Button @click="groupSettingDialogVisible = true" label="设置群聊" severity="secondary" variant="outlined" />
 
               <ConfirmDialog class="w-100 backdrop-blur-lg! bg-white/95! dark:bg-surface-900/80!"></ConfirmDialog>
-              <Button @click="deleteConfirm()" label=" 删除群聊" severity="danger" variant="outlined" />
+              <Button @click="deleteConfirm()" label="删除群聊" severity="danger" variant="outlined" />
 
             </div>
           </div>
