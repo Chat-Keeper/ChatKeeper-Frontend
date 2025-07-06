@@ -67,14 +67,15 @@ export default defineComponent({
     searchInterest() {
       request
         .post('/analysis/search', {
+          group_id: this.currentGroup.group_id,
           keyword: this.keyword,
         })
         .then((response) => {
           console.log(response)
           if (response.data.code === 200) {
             console.log(response.data.msg)
-            if (response.data.data.speaker_info) {
-              this.interestingSpeakers = response.data.data.speaker_info
+            if (response.data.data) {
+              this.interestingSpeakers = response.data.data
               this.interestingSpeakers.sort((a, b) => b.relativity - a.relativity)
             }
             this.keyword = ''
@@ -172,7 +173,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="lg:flex items-start p-5">
+  <div class="lg:flex items-start p-5 z-10!">
     <div class="lg:w-7/12 w-11/12 flex-col">
       <Card class="dark:bg-surface-900! m-3">
         <template #title>
@@ -358,7 +359,7 @@ export default defineComponent({
                         }"
                       >
                       </MeterGroup>
-                      <p class="font-bold text-sm">{{ speaker.relativity }}</p>
+                      <p class="font-bold text-sm">{{ Math.floor(speaker.relativity) }}</p>
                     </div>
                   </div>
                 </template>

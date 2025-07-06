@@ -17,6 +17,11 @@ export default defineComponent({
       this.displaySideMenu = !this.displaySideMenu
     }
   },
+  created() {
+    if (this.width < 1280 && this.$route.path !== '/home/groups') {
+      this.displaySideMenu = false;
+    }
+  },
   setup() {
     const { width } = useWindowSize()
     return {

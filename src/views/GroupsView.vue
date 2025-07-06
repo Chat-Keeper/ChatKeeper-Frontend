@@ -70,7 +70,6 @@ export default defineComponent({
 
   created() {
     this.getGroups()
-    this.$router.push('/home/groups')
   },
 
   watch: {
@@ -90,6 +89,12 @@ export default defineComponent({
         this.currentGroup['max_msg_freq'] = this.currentGroup.speaker_list[0].speaker_msg_freq
       }
     },
+
+    groupList() {
+      if (this.$route.params.group_id) {
+        this.currentGroup = this.groupList.find((group) => group.group_id === this.$route.params.group_id)
+      }
+    }
   },
 })
 </script>
