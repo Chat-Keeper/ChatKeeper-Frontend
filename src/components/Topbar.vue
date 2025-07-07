@@ -19,10 +19,12 @@ export default defineComponent({
         {
           label: '账户信息',
           icon: 'pi pi-book',
+          disabled: true
         },
         {
           label: '设置',
           icon: 'pi pi-cog',
+          disabled: true
         },
         {
           separator: true
@@ -52,14 +54,35 @@ export default defineComponent({
         .then((response) => {
           console.log(response)
           if (response.data.code === 200) {
-            useAuthStore().logout()
             console.log(response.data.msg)
             this.$router.push('/')
             this.tabStatus = "0"
+            this.$toast.add({
+              severity: 'success',
+              summary: '登出成功',
+              detail: '下次再见，' + useAuthStore().username + '！',
+              life: 3000
+            })
+            useAuthStore().logout()
+          }
+          else {
+            this.password = ''
+            this.$toast.add({
+              severity: 'error',
+              summary: '登出失败',
+              detail: '未知错误，请重试',
+              life: 3000
+            })
           }
         })
         .catch((error) => {
           console.log(error)
+          this.$toast.add({
+            severity: 'error',
+            summary: '服务器响应异常',
+            detail: '请联系管理人员',
+            life: 3000
+          })
         })
     },
 

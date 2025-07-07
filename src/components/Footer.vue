@@ -8,7 +8,14 @@ export default defineComponent({
 
 <template>
   <div class="h-20 flex justify-center bg-surface-100 dark:bg-surface-900">
-    <p class="self-center text-gray-500">ChatKeeper 0.1.0 by uniqueHRX</p>
+      <div class="flex justify-center items-center text-gray-500 gap-2">
+        <p class="font-bold">ChatKeeper v0.1.0</p>
+        <p>by</p>
+        <a href="https://github.com/uniqueHRX">uniqueHRX,</a>
+        <a href="https://github.com/sefresf">sefresf</a>
+        <p>and</p>
+        <a href="https://github.com/WildBoarHenry123">WildBoarHenry123</a>
+      </div>
   </div>
 </template>
 

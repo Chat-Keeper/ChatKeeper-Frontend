@@ -17,9 +17,22 @@ export default defineComponent({
 
     signup() {
       if (this.username === '' || this.password === '') {
+        this.$toast.add({
+          severity: 'warn',
+          summary: '用户名或密码为空',
+          detail: '请输入有效的用户名或密码',
+          life: 3000
+        })
         return
       }
       if (this.password !== this.passwordCheck) {
+        this.$toast.add({
+          severity: 'warn',
+          summary: '密码不一致',
+          detail: '两次输入的密码不一致，请重试',
+          life: 3000
+        })
+        this.passwordCheck = ''
         return
       }
       request
@@ -32,26 +45,49 @@ export default defineComponent({
           if (response.data.code === 200) {
             useAuthStore().login(response.data.data.user_id, response.data.data.username, response.data.data.token)
             console.log(response.data.msg)
-            this.signupSuccessToast(response.data.data.username)
             this.$router.push('/home')
+            this.$toast.add({
+              severity: 'success',
+              summary: '注册成功',
+              detail: '欢迎你，' + response.data.data.username + '！',
+              life: 3000
+            })
+          }
+          else if (response.data.code === 400) {
+            this.$toast.add({
+              severity: 'error',
+              summary: '注册失败',
+              detail: '用户名已经被注册',
+              life: 3000
+            })
+          }
+          else if (response.data.code === 401) {
+            this.$toast.add({
+              severity: 'error',
+              summary: '注册失败',
+              detail: '不合法的用户名',
+              life: 3000
+            })
+          }
+          else {
+            this.$toast.add({
+              severity: 'error',
+              summary: '注册失败',
+              detail: '未知错误，请重试',
+              life: 3000
+            })
           }
         })
         .catch((error) => {
           console.log(error)
+          this.$toast.add({
+            severity: 'error',
+            summary: '服务器响应异常',
+            detail: '请联系管理人员',
+            life: 3000
+          })
         })
     },
-
-    signupSuccessToast(username) {
-      this.$toast.add({
-        severity: 'success',
-        summary: '注册成功',
-        detail: '欢迎你，' + username + '！',
-        life: 3000
-      })
-    },
-  },
-  created() {
-    this.username = useAuthStore().username
   },
 })
 </script>
@@ -75,7 +111,7 @@ export default defineComponent({
       <div class="flex flex-col gap-6 w-full">
         <div class="flex flex-col gap-2 w-full">
           <label for="username" class="text-surface-900 dark:text-surface-0 font-medium leading-normal">用户名/Username</label>
-          <InputText v-model="username" id="username" type="text" placeholder="创建你的用户名" class="w-full p-3 shadow-sm rounded-lg"/>
+          <InputText v-model="username" id="username" type="text" placeholder="创建你的用户名（至少5个字符）" class="w-full p-3 shadow-sm rounded-lg"/>
         </div>
         <div class="flex flex-col gap-2 w-full">
           <label for="password" class="text-surface-900 dark:text-surface-0 font-medium leading-normal">密码/Password</label>

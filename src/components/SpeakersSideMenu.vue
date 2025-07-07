@@ -114,7 +114,7 @@ export default defineComponent({
                     <div class="flex items-center gap-2 text-sm text-surface-500 dark:text-surface-300 mt-2.5">
                       <div class="flex items-center gap-2 mr-3 w-12">
                         <i class="pi pi-inbox"></i>
-                        <p>{{ item.speaker_qq }}</p>
+                        <p class="w-45">{{ item.speaker_qq.length > 15 ? item.speaker_qq.slice(0,15) + '...' : item.speaker_qq }}</p>
                       </div>
                     </div>
                   </div>
