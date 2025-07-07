@@ -38,6 +38,7 @@ export default defineComponent({
 
   methods: {
     getSpeaker() {
+      this.ready = false
       request
         .get('/data/speaker/details', {
           params: {
@@ -54,9 +55,31 @@ export default defineComponent({
               this.ready = true
             }, 200)
           }
+          else if (response.data.code === 400) {
+            this.$toast.add({
+              severity: 'info',
+              summary: '对象未分析',
+              detail: '你还没有分析过这个对象，请先点击分析按钮运行分析',
+              life: 3000
+            })
+          }
+          else {
+            this.$toast.add({
+              severity: 'error',
+              summary: '未知错误',
+              detail: '请联系管理人员',
+              life: 3000
+            })
+          }
         })
         .catch((error) => {
           console.log(error)
+          this.$toast.add({
+            severity: 'error',
+            summary: '服务器响应异常',
+            detail: '请联系管理人员',
+            life: 3000
+          })
         })
     },
 
@@ -74,10 +97,38 @@ export default defineComponent({
             setTimeout(() => {
               this.ready = true
             }, 200)
+            this.$toast.add({
+              severity: 'success',
+              summary: '分析完成',
+              detail: '请等待页面刷新',
+              life: 3000,
+            })
+          }
+          else if (response.data.code === 400 || response.data.code === 404 || response.data.code === 405) {
+            this.$toast.add({
+              severity: 'error',
+              summary: '分析失败',
+              detail: '错误信息：' + response.data.msg,
+              life: 3000,
+            })
+          }
+          else {
+            this.$toast.add({
+              severity: 'error',
+              summary: '分析失败',
+              detail: '未知错误，请重试',
+              life: 3000,
+            })
           }
         })
         .catch((error) => {
           console.log(error)
+          this.$toast.add({
+            severity: 'error',
+            summary: '服务器响应异常',
+            detail: '请联系管理人员',
+            life: 3000
+          })
         })
     },
 
@@ -123,7 +174,6 @@ export default defineComponent({
     currentSpeaker() {
       console.log('currentSpeaker', this.currentSpeaker)
       this.ready = false
-      this.speakerDetails = null
       if (this.currentSpeaker.analyzed) {
         this.getSpeaker()
       }
@@ -173,7 +223,7 @@ export default defineComponent({
               <p class="flex justify-center items-center mt-8 text-6xl">{{ mbti }}</p>
               <p class="flex justify-center items-center mt-3 text-3xl">{{ mbtiDict[mbti] }}</p>
             </div>
-            <MbtiChart :identity="speakerDetails.identity"></MbtiChart>
+            <MbtiChart v-if="ready" :identity="speakerDetails.identity"></MbtiChart>
           </div>
 
           <div v-else>

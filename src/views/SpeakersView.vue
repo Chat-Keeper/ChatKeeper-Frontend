@@ -2,6 +2,8 @@
 import { defineComponent } from 'vue'
 import SpeakersSideMenu from '@/components/SpeakersSideMenu.vue'
 import request from '@/utils/request.js'
+import verify from '@/utils/verification.js'
+import { useAuthStore } from '@/store/auth.js'
 
 export default defineComponent({
   name: 'SpeakersView',
@@ -26,6 +28,22 @@ export default defineComponent({
             this.speakerList = response.data.data.speaker_list
             console.log(response.data.msg)
           }
+          else if (response.data.code === 400) {
+            this.$toast.add({
+              severity: 'info',
+              summary: '对象列表为空',
+              detail: '你可能还没有上传聊天记录，请先前往群聊管理页面上传',
+              life: 3000
+            })
+          }
+          else {
+            this.$toast.add({
+              severity: 'error',
+              summary: '未知错误',
+              detail: '请联系管理人员',
+              life: 3000
+            })
+          }
         })
         .catch((error) => {
           console.log(error)
@@ -38,18 +56,48 @@ export default defineComponent({
   },
 
   created() {
-    this.getSpeakers()
+    verify().then((status) => {
+      if (status) {
+        this.getSpeakers()
+      }
+      else {
+        useAuthStore().logout()
+        setTimeout(() =>  this.$router.push('/login'), 500)
+        this.$toast.add({
+          severity: 'info',
+          summary: '你尚未登录',
+          detail: '即将跳转登录页面……',
+          life: 3000
+        })
+      }
+    })
   },
 
   watch: {
     $route(to, from) {
-      console.log(to.params.speaker_id)
-      this.currentSpeaker = this.speakerList.find((speaker) => speaker.speaker_id === to.params.speaker_id)
-      if (!this.currentSpeaker) {
-        this.$router.push('/home/speakers')
-        console.log('not found')
-      }
+      verify().then((status) => {
+        if (status) {
+          this.getSpeakers()
+          console.log(to.params.speaker_id)
+          this.currentSpeaker = this.speakerList.find((speaker) => speaker.speaker_id === to.params.speaker_id)
+          if (!this.currentSpeaker) {
+            this.$router.push('/home/speakers')
+            console.log('not found')
+          }
+        }
+        else {
+          useAuthStore().logout()
+          setTimeout(() =>  this.$router.push('/login'), 500)
+          this.$toast.add({
+            severity: 'info',
+            summary: '你尚未登录',
+            detail: '即将跳转登录页面……',
+            life: 3000
+          })
+        }
+      })
     },
+
     speakerList() {
       if (this.$route.params.speaker_id) {
         this.currentSpeaker = this.speakerList.find((speaker) => speaker.speaker_id === this.$route.params.speaker_id)

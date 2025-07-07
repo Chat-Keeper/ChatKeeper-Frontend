@@ -53,18 +53,57 @@ export default defineComponent({
           if (response.data.code === 200) {
             console.log(response.data.msg)
             this.uploadStatus = 'success'
-            this.uploadSuccessToast()
-            setTimeout(() => this.$refs.fileUploadRef.clear(), 3000)
+            setTimeout(() => this.$refs.fileUploadRef.clear(), 500)
             this.$emit('updateGroup', response.data.data)
+            this.$toast.add({
+              severity: 'success',
+              summary: '上传成功',
+              detail: '聊天记录已经上传至数据库，请等待页面刷新！',
+              life: 3000,
+            })
+          }
+          else if (response.data.code === 402 || response.data.code === 403 || response.data.code === 404) {
+            this.uploadStatus = 'error'
+            this.$toast.add({
+              severity: 'error',
+              summary: '上传失败',
+              detail: '错误信息：' + response.data.msg,
+              life: 3000,
+            })
+          }
+          else {
+            this.uploadStatus = 'error'
+            this.$toast.add({
+              severity: 'error',
+              summary: '上传失败',
+              detail: '未知错误，请重试',
+              life: 3000
+            })
           }
         })
         .catch((error) => {
           console.log(error)
           this.uploadStatus = 'error'
+          this.$toast.add({
+            severity: 'error',
+            summary: '服务器响应异常',
+            detail: '请联系管理人员',
+            life: 3000
+          })
         })
     },
 
     searchInterest() {
+      const regex = /^[\s]*$/
+      if (regex.test(this.keyword)) {
+        this.$toast.add({
+          severity: 'warn',
+          summary: '关键词为空',
+          detail: '兴趣关键词不能为空，请重新输入',
+          life: 3000,
+        })
+        return
+      }
       request
         .post('/analysis/search', {
           group_id: this.currentGroup.group_id,
@@ -79,15 +118,53 @@ export default defineComponent({
               this.interestingSpeakers.sort((a, b) => b.relativity - a.relativity)
             }
             this.keyword = ''
+            this.$toast.add({
+              severity: 'success',
+              summary: '发现成功',
+              detail: '你发现了可能感兴趣的群成员……',
+              life: 3000
+            })
+          }
+          else if (response.data.code === 400 || response.data.code === 404 || response.data.code === 405) {
+            this.$toast.add({
+              severity: 'error',
+              summary: '发现失败',
+              detail: '错误信息：' + response.data.msg,
+              life: 3000,
+            })
+          }
+          else {
+            this.$toast.add({
+              severity: 'error',
+              summary: '发现失败',
+              detail: '未知错误，请重试',
+              life: 3000,
+            })
           }
         })
         .catch((error) => {
           console.log(error)
+          this.$toast.add({
+            severity: 'error',
+            summary: '服务器响应异常',
+            detail: '请联系管理人员',
+            life: 3000
+          })
         })
     },
 
     renameGroup() {
       if (this.newGroupName.length > 0) {
+        const regex = /^[\s]*$/
+        if (regex.test(this.newGroupName)) {
+          this.$toast.add({
+            severity: 'warn',
+            summary: '群聊名称为空',
+            detail: '群聊名称不能为空，请重新命名群聊',
+            life: 3000,
+          })
+          return
+        }
         request
           .post('/data/group/rename', {
             group_id: this.$route.params.group_id,
@@ -99,10 +176,38 @@ export default defineComponent({
               console.log(response.data.msg)
               this.$emit('renameGroup', this.newGroupName)
               this.groupSettingDialogVisible = false
+              this.$toast.add({
+                severity: 'success',
+                summary: '重命名成功',
+                detail: '群聊被重命名为：' + this.newGroupName,
+                life: 3000
+              })
+            }
+            else if (response.data.code === 400) {
+              this.$toast.add({
+                severity: 'error',
+                summary: '重命名失败',
+                detail: '群聊重命名失败，请再次尝试或者更换名称',
+                life: 3000
+              })
+            }
+            else {
+              this.$toast.add({
+                severity: 'error',
+                summary: '重命名失败',
+                detail: '未知错误，请重试',
+                life: 3000
+              })
             }
           })
           .catch((error) => {
             console.log(error)
+            this.$toast.add({
+              severity: 'error',
+              summary: '服务器响应异常',
+              detail: '请联系管理人员',
+              life: 3000
+            })
           })
       }
       else {
@@ -120,6 +225,28 @@ export default defineComponent({
           if (response.data.code === 200) {
             console.log(response.data.msg)
             this.$emit('deleteGroup', this.$route.params.group_id)
+            this.$toast.add({
+              severity: 'success',
+              summary: '群聊删除成功',
+              detail: '你删除了群聊：' + this.newGroupName,
+              life: 3000
+            })
+          }
+          else if (response.data.code === 400) {
+            this.$toast.add({
+              severity: 'error',
+              summary: '群聊删除失败',
+              detail: '错误信息：' + response.data.msg,
+              life: 3000
+            })
+          }
+          else {
+            this.$toast.add({
+              severity: 'error',
+              summary: '群聊删除失败',
+              detail: '未知错误，请重试',
+              life: 3000
+            })
           }
         })
         .catch((error) => {
@@ -144,15 +271,6 @@ export default defineComponent({
         accept: () => {
           this.deleteGroup()
         },
-      })
-    },
-
-    uploadSuccessToast() {
-      this.$toast.add({
-        severity: 'success',
-        summary: '上传成功',
-        detail: '聊天记录已经上传至数据库，请等待页面刷新！',
-        life: 3000,
       })
     },
 

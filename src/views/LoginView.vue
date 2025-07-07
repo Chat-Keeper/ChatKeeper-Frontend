@@ -25,22 +25,42 @@ export default defineComponent({
           if (response.data.code === 200) {
             useAuthStore().login(response.data.data.user_id, response.data.data.username, response.data.data.token)
             console.log(response.data.msg)
-            this.loginSuccessToast(response.data.data.username)
             this.$router.push('/home')
+            this.$toast.add({
+              severity: 'success',
+              summary: '登录成功',
+              detail: '欢迎你，' + response.data.data.username + '！',
+              life: 3000
+            })
+          }
+          else if (response.data.code === 400) {
+            this.password = ''
+            this.$toast.add({
+              severity: 'error',
+              summary: '登录失败',
+              detail: '用户名或密码错误',
+              life: 3000
+            })
+          }
+          else {
+            this.password = ''
+            this.$toast.add({
+              severity: 'error',
+              summary: '登录失败',
+              detail: '未知错误，请重试',
+              life: 3000
+            })
           }
         })
         .catch((error) => {
           console.log(error)
+          this.$toast.add({
+            severity: 'error',
+            summary: '服务器响应异常',
+            detail: '请联系管理人员',
+            life: 3000
+          })
         })
-    },
-
-    loginSuccessToast(username) {
-      this.$toast.add({
-        severity: 'success',
-        summary: '登录成功',
-        detail: '欢迎你，' + username + '！',
-        life: 3000
-      })
     },
   },
   created() {

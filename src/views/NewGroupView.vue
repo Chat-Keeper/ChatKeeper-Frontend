@@ -47,22 +47,60 @@ export default defineComponent({
           if (response.data.code === 200) {
             console.log(response.data.msg)
             this.uploadStatus = 'success'
-            this.uploadSuccessToast()
-            setTimeout(() => this.$refs.fileUploadRef.clear(), 3000)
+            setTimeout(() => this.$refs.fileUploadRef.clear(), 500)
             this.$emit('updateGroup', response.data.data)
+            this.$toast.add({
+              severity: 'success',
+              summary: '上传成功',
+              detail: '聊天记录已经上传至数据库，请等待页面刷新！',
+              life: 3000,
+            })
+          }
+          else if (response.data.code === 402 || response.data.code === 403 || response.data.code === 404) {
+            this.uploadStatus = 'error'
+            this.deleteGroup()
+            this.$toast.add({
+              severity: 'error',
+              summary: '上传失败',
+              detail: '错误信息：' + response.data.msg,
+              life: 3000,
+            })
           }
           else {
+            this.uploadStatus = 'error'
             this.deleteGroup()
+            this.$toast.add({
+              severity: 'error',
+              summary: '上传失败',
+              detail: '未知错误，请重试',
+              life: 3000
+            })
           }
         })
         .catch((error) => {
           console.log(error)
           this.uploadStatus = 'error'
           this.deleteGroup()
+          this.$toast.add({
+            severity: 'error',
+            summary: '服务器响应异常',
+            detail: '请联系管理人员',
+            life: 3000
+          })
         })
     },
 
     createGroup() {
+      const regex = /^[\s]*$/
+      if (regex.test(this.groupName)) {
+        this.$toast.add({
+          severity: 'warn',
+          summary: '群聊名称为空',
+          detail: '群聊名称不能为空，请重新命名群聊',
+          life: 3000,
+        })
+        return
+      }
       request
         .post('/data/group/new', {
           group_name: this.groupName
@@ -70,14 +108,41 @@ export default defineComponent({
         .then((response) => {
           console.log(response)
           if (response.data.code === 200) {
-            this.createSuccessToast()
             this.groupId = response.data.data.group_id
             this.onUpload()
             this.groupName = ''
+            this.$toast.add({
+              severity: 'success',
+              summary: '群聊创建成功',
+              detail: '群聊创建成功，正在上传聊天记录……',
+              life: 3000,
+            })
+          }
+          else if (response.data.code === 400) {
+            this.$toast.add({
+              severity: 'error',
+              summary: '群聊创建失败',
+              detail: '群聊创建失败，请再次尝试或者重新命名群聊',
+              life: 3000
+            })
+          }
+          else {
+            this.$toast.add({
+              severity: 'error',
+              summary: '群聊创建失败',
+              detail: '未知错误，请重试',
+              life: 3000
+            })
           }
         })
         .catch((error) => {
           console.log(error)
+          this.$toast.add({
+            severity: 'error',
+            summary: '服务器响应异常',
+            detail: '请联系管理人员',
+            life: 3000
+          })
         })
     },
 
@@ -88,29 +153,36 @@ export default defineComponent({
         })
         .then((response) => {
           console.log(response)
+          if (response.data.code === 200) {
+            this.groupId = response.data.data.group_id
+            this.groupName = ''
+            this.$toast.add({
+              severity: 'warn',
+              summary: '空群聊已删除',
+              detail: '没有聊天记录的空群聊被删除了，请尝试重新创建群聊并上传正确的聊天记录',
+              life: 3000,
+            })
+          }
+          else {
+            this.$toast.add({
+              severity: 'error',
+              summary: '未知错误',
+              detail: '未知错误，请联系管理人员',
+              life: 3000
+            })
+          }
         })
         .catch((error) => {
           console.log(error)
+          this.$toast.add({
+            severity: 'error',
+            summary: '服务器响应异常',
+            detail: '请联系管理人员',
+            life: 3000
+          })
         })
     },
 
-    createSuccessToast() {
-      this.$toast.add({
-        severity: 'success',
-        summary: '群聊创建成功',
-        detail: '群聊创建成功，正在上传聊天记录……',
-        life: 3000,
-      })
-    },
-
-    uploadSuccessToast() {
-      this.$toast.add({
-        severity: 'success',
-        summary: '上传成功',
-        detail: '聊天记录已经上传至数据库，请等待页面刷新！',
-        life: 3000,
-      })
-    },
   },
 
   watch: {
