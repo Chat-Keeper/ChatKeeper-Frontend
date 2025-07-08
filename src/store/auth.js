@@ -1,5 +1,9 @@
-import {defineStore} from 'pinia'
+import { defineStore } from 'pinia'
 
+/**
+ * 令牌以及登陆状态管理
+ * @type {StoreDefinition<'auth', {loginStatus: boolean, rememberUser: boolean, userId: null, username: null, token: null}, {}, {login(*, *, *): void, logout(): void}>}
+ */
 export const useAuthStore = defineStore('auth', {
   state: () => ({
     loginStatus: false,
@@ -22,9 +26,9 @@ export const useAuthStore = defineStore('auth', {
       if (!this.rememberUser) {
         this.username = null
       }
-    }
+    },
   },
   persist: {
-    paths: ['loginStatus', 'rememberUser', 'userId', 'username', 'token']
-  }
+    paths: ['loginStatus', 'rememberUser', 'userId', 'username', 'token'],
+  },
 })

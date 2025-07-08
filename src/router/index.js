@@ -1,6 +1,10 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import AppLayout from '@/layout/AppLayout.vue'
 
+/**
+ * 页面路由
+ * @type {Router}
+ */
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -32,8 +36,8 @@ const router = createRouter({
               path: '/home/groups/:group_id',
               name: 'group-detail',
               component: () => import('@/views/GroupDetailView.vue'),
-            }
-          ]
+            },
+          ],
         },
         {
           path: '/home/speakers',
@@ -44,8 +48,8 @@ const router = createRouter({
               path: '/home/speakers/:speaker_id',
               name: 'speaker-detail',
               component: () => import('@/views/SpeakerDetailView.vue'),
-            }
-          ]
+            },
+          ],
         },
         {
           path: '/login',
@@ -61,7 +65,7 @@ const router = createRouter({
           path: '/:pathMatch(.*)*',
           name: 'not-found',
           component: () => import('@/views/NotFoundView.vue'),
-        }
+        },
       ],
     },
   ],

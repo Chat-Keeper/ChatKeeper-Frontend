@@ -1,10 +1,17 @@
 <script>
 import { defineComponent } from 'vue'
 import request from '@/utils/request.js'
-import { useAuthStore } from "@/store/auth.js"
+import { useAuthStore } from '@/store/auth.js'
 
+/**
+ * **LoginView.vue**
+ * 注册视图
+ * - 功能：提供注册页面
+ * - 引用：`request.js`, `auth.js`
+ */
 export default defineComponent({
-  name: "SignupView",
+  name: 'SignupView',
+
   data() {
     return {
       username: '',
@@ -12,16 +19,18 @@ export default defineComponent({
       passwordCheck: '',
     }
   },
+
   methods: {
     useAuthStore,
 
+    /* 用户注册方法 */
     signup() {
       if (this.username === '' || this.password === '') {
         this.$toast.add({
           severity: 'warn',
           summary: '用户名或密码为空',
           detail: '请输入有效的用户名或密码',
-          life: 3000
+          life: 3000,
         })
         return
       }
@@ -30,7 +39,7 @@ export default defineComponent({
           severity: 'warn',
           summary: '密码不一致',
           detail: '两次输入的密码不一致，请重试',
-          life: 3000
+          life: 3000,
         })
         this.passwordCheck = ''
         return
@@ -50,31 +59,28 @@ export default defineComponent({
               severity: 'success',
               summary: '注册成功',
               detail: '欢迎你，' + response.data.data.username + '！',
-              life: 3000
+              life: 3000,
             })
-          }
-          else if (response.data.code === 400) {
+          } else if (response.data.code === 400) {
             this.$toast.add({
               severity: 'error',
               summary: '注册失败',
               detail: '用户名已经被注册',
-              life: 3000
+              life: 3000,
             })
-          }
-          else if (response.data.code === 401) {
+          } else if (response.data.code === 401) {
             this.$toast.add({
               severity: 'error',
               summary: '注册失败',
               detail: '不合法的用户名',
-              life: 3000
+              life: 3000,
             })
-          }
-          else {
+          } else {
             this.$toast.add({
               severity: 'error',
               summary: '注册失败',
               detail: '未知错误，请重试',
-              life: 3000
+              life: 3000,
             })
           }
         })
@@ -84,7 +90,7 @@ export default defineComponent({
             severity: 'error',
             summary: '服务器响应异常',
             detail: '请联系管理人员',
-            life: 3000
+            life: 3000,
           })
         })
     },
@@ -93,12 +99,11 @@ export default defineComponent({
 </script>
 
 <template>
-
   <div class="min-h-screen bg-surface-50 dark:bg-surface-950 px-6 py-20 md:px-12 lg:px-20">
     <div class="bg-surface-0 dark:bg-surface-900 p-10 md:p-12 md:px-14 shadow-sm rounded-2xl max-w-lg mx-auto flex flex-col gap-8">
       <div class="flex flex-col items-center gap-6">
         <div class="flex items-center gap-4">
-          <Avatar icon="pi pi-prime" class="bg-transparent" size="xlarge"/>
+          <Avatar icon="pi pi-prime" class="bg-transparent" size="xlarge" />
         </div>
         <div class="flex flex-col items-center gap-3 w-full">
           <div class="text-surface-900 dark:text-surface-0 text-3xl font-semibold leading-tight text-center w-full">注册账号</div>
@@ -111,23 +116,27 @@ export default defineComponent({
       <div class="flex flex-col gap-6 w-full">
         <div class="flex flex-col gap-2 w-full">
           <label for="username" class="text-surface-900 dark:text-surface-0 font-medium leading-normal">用户名/Username</label>
-          <InputText v-model="username" id="username" type="text" placeholder="创建你的用户名（至少5个字符）" class="w-full p-3 shadow-sm rounded-lg"/>
+          <InputText
+            v-model="username"
+            id="username"
+            type="text"
+            placeholder="创建你的用户名（至少5个字符）"
+            class="w-full p-3 shadow-sm rounded-lg"
+          />
         </div>
         <div class="flex flex-col gap-2 w-full">
           <label for="password" class="text-surface-900 dark:text-surface-0 font-medium leading-normal">密码/Password</label>
-          <InputText v-model="password" id="password" type="password" placeholder="创建你的密码" class="w-full p-3 shadow-sm rounded-lg"/>
-          <InputText v-model="passwordCheck" id="password" type="password" placeholder="再次输入密码" class="w-full p-3 shadow-sm rounded-lg my-2"/>
+          <InputText v-model="password" id="password" type="password" placeholder="创建你的密码" class="w-full p-3 shadow-sm rounded-lg" />
+          <InputText v-model="passwordCheck" id="password" type="password" placeholder="再次输入密码" class="w-full p-3 shadow-sm rounded-lg my-2" />
         </div>
       </div>
       <Button @click="signup()" label="注册" icon="pi pi-user" class="w-full py-2 rounded-lg flex justify-center items-center gap-2">
         <template #icon>
-          <i class="pi pi-user !text-base !leading-normal"/>
+          <i class="pi pi-user !text-base !leading-normal" />
         </template>
       </Button>
     </div>
   </div>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

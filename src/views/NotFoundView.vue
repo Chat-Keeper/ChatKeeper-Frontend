@@ -2,15 +2,29 @@
 import { defineComponent } from 'vue'
 import verify from '@/utils/verification.js'
 
+/**
+ * **NotFoundView.vue**
+ * 路由未定义视图
+ * - 功能：处理未定义路由访问，导航回主页
+ * - 引用：`verification.js`
+ */
 export default defineComponent({
   name: 'NotFoundView',
+
+  /* 页面创建时验证用户登录有效性 */
   created() {
     verify().then((status) => {
       if (!status) {
-        this.$router.push('/login')
+        setTimeout(() => this.$router.push('/login'), 500)
+        this.$toast.add({
+          severity: 'info',
+          summary: '你尚未登录',
+          detail: '即将跳转登录页面……',
+          life: 3000,
+        })
       }
     })
-  }
+  },
 })
 </script>
 
@@ -30,6 +44,4 @@ export default defineComponent({
   </div>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>
