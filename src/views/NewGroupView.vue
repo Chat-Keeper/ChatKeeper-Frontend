@@ -2,8 +2,16 @@
 import { defineComponent } from 'vue'
 import request from '@/utils/request.js'
 
+/**
+ * **NewGroupView.vue**
+ * 新建群聊视图
+ * - 功能：新建群聊并上传聊天记录
+ * - 引用：`request.js`
+ * - 特性：响应式设计
+ */
 export default defineComponent({
   name: 'CreateGroupView',
+
   data() {
     return {
       groupName: '',
@@ -28,14 +36,14 @@ export default defineComponent({
       this.uploadStatus = 'pending'
     },
 
+    /* 上传聊天记录 */
     onUpload() {
       this.uploadStatus = 'uploading'
       this.uploadProgress = 0
-
+      // 写入表单格式数据
       const formData = new FormData()
       formData.append('group_id', this.groupId)
       formData.append('chat_log', this.uploadFile)
-
       request
         .post('/data/upload', formData, {
           onUploadProgress: (progressEvent) => {
@@ -55,8 +63,7 @@ export default defineComponent({
               detail: '聊天记录已经上传至数据库，请等待页面刷新！',
               life: 3000,
             })
-          }
-          else if (response.data.code === 402 || response.data.code === 403 || response.data.code === 404) {
+          } else if (response.data.code === 402 || response.data.code === 403 || response.data.code === 404) {
             this.uploadStatus = 'error'
             this.deleteGroup()
             this.$toast.add({
@@ -65,15 +72,14 @@ export default defineComponent({
               detail: '错误信息：' + response.data.msg,
               life: 3000,
             })
-          }
-          else {
+          } else {
             this.uploadStatus = 'error'
             this.deleteGroup()
             this.$toast.add({
               severity: 'error',
               summary: '上传失败',
               detail: '未知错误，请重试',
-              life: 3000
+              life: 3000,
             })
           }
         })
@@ -85,11 +91,12 @@ export default defineComponent({
             severity: 'error',
             summary: '服务器响应异常',
             detail: '请联系管理人员',
-            life: 3000
+            life: 3000,
           })
         })
     },
 
+    /* 新建群聊 */
     createGroup() {
       const regex = /^[\s]*$/
       if (regex.test(this.groupName)) {
@@ -103,7 +110,7 @@ export default defineComponent({
       }
       request
         .post('/data/group/new', {
-          group_name: this.groupName
+          group_name: this.groupName,
         })
         .then((response) => {
           console.log(response)
@@ -117,21 +124,19 @@ export default defineComponent({
               detail: '群聊创建成功，正在上传聊天记录……',
               life: 3000,
             })
-          }
-          else if (response.data.code === 400) {
+          } else if (response.data.code === 400) {
             this.$toast.add({
               severity: 'error',
               summary: '群聊创建失败',
               detail: '群聊创建失败，请再次尝试或者重新命名群聊',
-              life: 3000
+              life: 3000,
             })
-          }
-          else {
+          } else {
             this.$toast.add({
               severity: 'error',
               summary: '群聊创建失败',
               detail: '未知错误，请重试',
-              life: 3000
+              life: 3000,
             })
           }
         })
@@ -141,15 +146,16 @@ export default defineComponent({
             severity: 'error',
             summary: '服务器响应异常',
             detail: '请联系管理人员',
-            life: 3000
+            life: 3000,
           })
         })
     },
 
+    /* 删除群聊 */
     deleteGroup() {
       request
         .post('/data/group/delete', {
-          group_id: this.groupId
+          group_id: this.groupId,
         })
         .then((response) => {
           console.log(response)
@@ -162,13 +168,12 @@ export default defineComponent({
               detail: '没有聊天记录的空群聊被删除了，请尝试重新创建群聊并上传正确的聊天记录',
               life: 3000,
             })
-          }
-          else {
+          } else {
             this.$toast.add({
               severity: 'error',
               summary: '未知错误',
               detail: '未知错误，请联系管理人员',
-              life: 3000
+              life: 3000,
             })
           }
         })
@@ -178,13 +183,13 @@ export default defineComponent({
             severity: 'error',
             summary: '服务器响应异常',
             detail: '请联系管理人员',
-            life: 3000
+            life: 3000,
           })
         })
     },
-
   },
 
+  /* 监听路由，适时清空表单数据 */
   watch: {
     $route() {
       this.groupName = ''
@@ -196,13 +201,12 @@ export default defineComponent({
       this.$refs.fileUploadRef.clear()
     },
   },
-
 })
 </script>
 
 <template>
   <div class="lg:w-full lg:flex w-11/12 p-5">
-
+    <!--新建群聊卡片-->
     <Card class="dark:bg-surface-900! m-3 lg:w-1/2 w-full">
       <template #title>
         <div class="flex items-center gap-3 mb-1">
@@ -233,7 +237,7 @@ export default defineComponent({
         </div>
       </template>
     </Card>
-
+    <!--上传聊天记录卡片-->
     <Card class="dark:bg-surface-900! m-3 lg:w-1/2 w-full">
       <template #title>
         <div class="flex items-center gap-3 mb-1">
@@ -242,9 +246,7 @@ export default defineComponent({
         </div>
       </template>
       <template #content>
-        <div class="text-surface-500! dark:text-surface-300! mt-2">
-          第2步：选择 .txt 格式的聊天记录并上传
-        </div>
+        <div class="text-surface-500! dark:text-surface-300! mt-2">第2步：选择 .txt 格式的聊天记录并上传</div>
         <div class="flex items-start mt-2">
           <FileUpload
             ref="fileUploadRef"
@@ -288,7 +290,6 @@ export default defineComponent({
       </template>
     </Card>
   </div>
-
 </template>
 
 <style scoped></style>

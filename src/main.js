@@ -1,10 +1,10 @@
 import './assets/main.css'
 import 'primeicons/primeicons.css'
 
-import {createApp} from 'vue'
+import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
-import {createPinia} from "pinia"
+import { createPinia } from 'pinia'
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 import PrimeVue from 'primevue/config'
 import Aura from '@primeuix/themes/aura'
@@ -12,14 +12,18 @@ import ToastService from 'primevue/toastservice'
 import ConfirmationService from 'primevue/confirmationservice'
 import { definePreset } from '@primeuix/themes'
 
+// 创建Vue应用
 const app = createApp(App)
 
+// 使用Vue Router
 app.use(router)
 
+// 使用Pinia
 const pinia = createPinia()
 pinia.use(piniaPluginPersistedstate)
 app.use(pinia)
 
+// 定义PrimeVue页面主题色
 const Preset = definePreset(Aura, {
   semantic: {
     colorScheme: {
@@ -35,7 +39,7 @@ const Preset = definePreset(Aura, {
           700: '{emerald.700}',
           800: '{emerald.800}',
           900: '{emerald.900}',
-          950: '{emerald.950}'
+          950: '{emerald.950}',
         },
         secondary: {
           0: '#ffffff',
@@ -49,7 +53,7 @@ const Preset = definePreset(Aura, {
           700: '{sky.700}',
           800: '{sky.800}',
           900: '{sky.900}',
-          950: '{sky.950}'
+          950: '{sky.950}',
         },
         surface: {
           0: '#ffffff',
@@ -63,8 +67,8 @@ const Preset = definePreset(Aura, {
           700: '{slate.700}',
           800: '{slate.800}',
           900: '{slate.900}',
-          950: '{slate.950}'
-        }
+          950: '{slate.950}',
+        },
       },
       dark: {
         primary: {
@@ -78,7 +82,7 @@ const Preset = definePreset(Aura, {
           700: '{indigo.700}',
           800: '{indigo.800}',
           900: '{indigo.900}',
-          950: '{indigo.950}'
+          950: '{indigo.950}',
         },
         surface: {
           0: '#ffffff',
@@ -92,23 +96,26 @@ const Preset = definePreset(Aura, {
           700: '{slate.700}',
           800: '{slate.800}',
           900: '{slate.900}',
-          950: '{slate.950}'
-        }
-      }
-    }
-  }
-});
+          950: '{slate.950}',
+        },
+      },
+    },
+  },
+})
 
+// 使用PrimeVue
 app.use(PrimeVue, {
   theme: {
     preset: Preset,
     options: {
       darkModeSelector: '.dark-mode-selector',
     },
-  }
+  },
 })
 
+// 使用PrimeVue相关服务
 app.use(ToastService)
 app.use(ConfirmationService)
 
+// 挂载应用
 app.mount('#app')
